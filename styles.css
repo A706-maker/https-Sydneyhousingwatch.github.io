@@ -75,7 +75,7 @@ footer {
 }
 
 .grid-item {
-  border: none;
+  border: none; /* removes grey outline */
   border-radius: 10px;
   overflow: hidden;
   display: block;
