@@ -80,6 +80,7 @@ footer {
   overflow: hidden;
   display: block;
   transition: transform 0.2s ease;
+  text-align: center;
 }
 
 .grid-item:hover {
@@ -92,6 +93,8 @@ footer {
   height: auto; /* keeps full poportions */
   object-fit: contain; /* show full image no cropping */
   display: block;
+  margin: 0 auto;
+  border-radius: 8px;
 }
 
 .grid-item p {
