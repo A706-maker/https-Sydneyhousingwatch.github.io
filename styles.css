@@ -87,10 +87,10 @@ footer {
 }
 
 .grid-item img {
-  width: 70%;  /* make the image less wide */
-  height: auto; 
-  object-fit: cover;
-  border-radius: 8px;
+  width: 70%;  /* less wide */
+  height: auto; /* keeps full poportions */
+  object-fit: contain; /* show full image no cropping */
+  display: block;
 }
 
 .grid-item p {
