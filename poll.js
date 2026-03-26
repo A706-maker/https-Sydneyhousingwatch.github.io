@@ -7,7 +7,7 @@ const questions = [
       "Insufficient housing supply",
       "Low interest rates inflated over the past decade"
     ],
-    correct: 3
+    correct: 2
   },
   {
     text: "What salary do you think would be required to buy a home today?",
@@ -27,7 +27,7 @@ const questions = [
   {
     text: "The 'First Home Guarantee' scheme in NSW now allows eligible buyers to purchase properties valued up to _____ with only a 5% deposit",
     options: ["$900k", "$1.5M", "$1.75M", "$1.8M"],
-    correct: 2
+    correct: 1
   }
 ];
 let currentQuestion = 0;
