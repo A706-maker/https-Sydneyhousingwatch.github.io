@@ -223,6 +223,13 @@ footer {
     margin-bottom: 20px;
 }
 
+#start-screen {
+    background: #f7efd7; 
+    padding: 40px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
   
   
   
