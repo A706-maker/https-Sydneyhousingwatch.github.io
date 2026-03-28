@@ -72,6 +72,21 @@
       <textarea id="message" name="message" rows="5" ></textarea>
 
       <button type="submit">Submit</button>
+
+      <script>
+        document.getElementById("contact Us!").addEventListener("submit", async (e) => {
+          e.preventByDefault();
+
+        const data = Object.fromEntries(new FormData(e.target).entries());
+
+        await fetch("https://script.google.com/macros/s/AKfycbyhJ0br99S5lIuDRQWF62Rc7ZmueyTPQemsWCvFDrTNQZpjSZAUY5wHdPMax7COoqRv/exec"; {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+
+        alert("Submitted");
+        });
+      </script>
     </form>
     </div>
     
