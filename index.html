@@ -57,7 +57,7 @@
     <div class="contact-section">
       <h2>Contact Us!</h2>
 
-    <form action="https://formspree.io/f/mzdkdvql" method="POST">
+    <form id="contactForm">
 
       <label for="firstname">First Name</label>
       <input type="text" id="firstname" name="firstname" required>
@@ -74,12 +74,12 @@
       <button type="submit">Submit</button>
 
       <script>
-        document.getElementById("contact Us!").addEventListener("submit", async (e) => {
-          e.preventByDefault();
+        document.getElementById("contactForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
 
         const data = Object.fromEntries(new FormData(e.target).entries());
 
-        await fetch("https://script.google.com/macros/s/AKfycbw0Wr2IIbMTFupc_R4mORsyL-BIZA4B3s7F5KKfQTJ9sGsNKX0WrYkQMyaRSIkjLx4V/exec"; {
+        await fetch("https://script.google.com/macros/s/AKfycbw0Wr2IIbMTFupc_R4mORsyL-BIZA4B3s7F5KKfQTJ9sGsNKX0WrYkQMyaRSIkjLx4V/exec", {
           method: "POST",
           body: JSON.stringify(data)
         });
