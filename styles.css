@@ -304,6 +304,15 @@ footer {
   max-width: 500px;
 }
 
+/* Style h1 in page4 */
+.container h1 {
+  color: #264769;  /* Different coloured text */
+  font-family: 'Georgia', serif;  /* Different font */
+  text-align: center;
+  font-size: 32px;  /* increased size */
+  margin-bottom: 20px;  /* added spacing */
+}
+
 
   
   
