@@ -6,6 +6,21 @@ let supabaseClient;
 if (typeof supabase !== 'undefined') {
   supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll</title>
+    <script src="/path/to/script.js" defer></script>
+</head>
+<body>
+    <h1>Poll</h1>
+    <button id="voteButton">Vote</button>
+    <script>
+        document.getElementById('voteButton').addEventListener('click', function() {
+            // Handle vote logic here
+        });
 
 const questions = [
   {
