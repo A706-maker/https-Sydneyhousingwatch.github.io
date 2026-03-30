@@ -6,21 +6,6 @@ let supabaseClient;
 if (typeof supabase !== 'undefined') {
   supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poll</title>
-    <script src="/path/to/script.js" defer></script>
-</head>
-<body>
-    <h1>Poll</h1>
-    <button id="voteButton">Vote</button>
-    <script>
-        document.getElementById('voteButton').addEventListener('click', function() {
-            // Handle vote logic here
-        });
 
 const questions = [
   {
@@ -65,8 +50,6 @@ const resultScreen = document.getElementById("result-screen");
 const scoreText = document.getElementById("score-text");
 const progressContainer = document.getElementById("progress-container");
 const progressBar = document.getElementById("progress-bar");
-
-document.getElementById("start-btn").onclick = startQuiz;
 
 function generateUserId() {
   const stored = localStorage.getItem("quizUserId");
@@ -135,6 +118,7 @@ function updateProgress() {
   const percent = ((currentQuestion) / questions.length) * 100;
   progressBar.style.width = percent + "%";
 }
+
 async function showResults() {
   pollContainer.classList.add("hidden");
   progressContainer.classList.add("hidden");
@@ -149,10 +133,9 @@ async function showResults() {
   }
 
   try {
-    // Get the user's answers
     const userAnswers = [];
     for (let i = 0; i < questions.length; i++) {
-      userAnswers.push(i); // or store actual answers if you track them
+      userAnswers.push(i);
     }
 
     console.log("Attempting insert with:", {
@@ -186,7 +169,6 @@ async function showResults() {
 
     console.log("Insert successful!");
 
-    // Get stats
     const { data: allData, error: selectError } = await supabaseClient
       .from("quiz_responses")
       .select("*");
@@ -212,17 +194,17 @@ async function showResults() {
     console.error("Full error:", error);
   }
 }
-const retakeQuizButton = document.getElementById('retake-quiz');
-const backToHomeButton = document.getElementById('back-to-home');
 
-retakeQuizButton.addEventListener('click', function() {
-    // Logic for retaking quiz
-});
+function restartQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  resultScreen.classList.add("hidden");
+  pollContainer.classList.remove("hidden");
+  progressContainer.classList.remove("hidden");
+  loadQuestion();
+}
 
-backToHomeButton.addEventListener('click', function() {
-    // Logic for going back to home
-});
-
+// Attach button handlers
 document.getElementById("start-btn").onclick = startQuiz;
 document.getElementById("retry-btn").onclick = restartQuiz;
 document.getElementById("home-btn").onclick = () => {
