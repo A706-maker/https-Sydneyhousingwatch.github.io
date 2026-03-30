@@ -203,3 +203,14 @@ async function showResults() {
     console.error("Full error:", error);
   }
 }
+const retakeQuizButton = document.getElementById('retake-quiz');
+const backToHomeButton = document.getElementById('back-to-home');
+
+retakeQuizButton.addEventListener('click', function() {
+    // Logic for retaking quiz
+});
+
+backToHomeButton.addEventListener('click', function() {
+    // Logic for going back to home
+});
+
