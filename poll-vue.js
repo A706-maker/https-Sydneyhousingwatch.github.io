@@ -125,7 +125,6 @@ function updateProgress() {
   const percent = ((currentQuestion) / questions.length) * 100;
   progressBar.style.width = percent + "%";
 }
-
 async function showResults() {
   pollContainer.classList.add("hidden");
   progressContainer.classList.add("hidden");
@@ -136,12 +135,16 @@ async function showResults() {
 
   // Save to Supabase
   if (!supabaseClient) {
-    scoreText.innerHTML += `<br><br><strong style="color: red;">Supabase not initialized</strong>`;
+    scoreText.innerHTML += `<br><br><strong style="color: red;">ERROR: Supabase client not found</strong>`;
+    console.log("supabaseClient is undefined");
     return;
   }
 
   try {
-    const { data: insertData, error: insertError } = await supabaseClient
+    console.log("Saving to Supabase...");
+    
+    // Try to insert
+    const insertResult = await supabaseClient
       .from("quiz_responses")
       .insert([
         {
@@ -153,20 +156,31 @@ async function showResults() {
         }
       ]);
 
-    if (insertError) {
-      scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${insertError.message}</strong>`;
+    console.log("Insert result:", insertResult);
+
+    if (insertResult.error) {
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Save failed: ${insertResult.error.message}</strong>`;
+      console.error("Insert error:", insertResult.error);
       return;
     }
 
-    // Get stats and display
-    const { data: allData, error: selectError } = await supabaseClient
+    console.log("Insert successful, now reading stats...");
+
+    // Try to read all responses
+    const selectResult = await supabaseClient
       .from("quiz_responses")
       .select("*");
 
-    if (selectError) {
-      scoreText.innerHTML += `<br><br><strong style="color: red;">Error reading stats: ${selectError.message}</strong>`;
+    console.log("Select result:", selectResult);
+
+    if (selectResult.error) {
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Stats failed: ${selectResult.error.message}</strong>`;
+      console.error("Select error:", selectResult.error);
       return;
     }
+
+    const allData = selectResult.data;
+    console.log("Data returned:", allData);
 
     if (allData && allData.length > 0) {
       const totalResponses = allData.length;
@@ -174,20 +188,11 @@ async function showResults() {
       
       scoreText.innerHTML += `<br><br><strong>Quiz Statistics:</strong><br>Total takers: ${totalResponses}<br>Average score: ${avgScore}%`;
     } else {
-      scoreText.innerHTML += `<br><br><strong>✅ Your response saved!</strong>`;
+      scoreText.innerHTML += `<br><br><strong>✅ Response saved!</strong>`;
     }
+
   } catch (error) {
-    scoreText.innerHTML += `<br><br><strong style="color: red;">Catch Error: ${error.message}</strong>`;
+    scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${error.message}</strong>`;
+    console.error("Full error:", error);
   }
-}
-
-function restartQuiz() {
-  currentQuestion = 0;
-  score = 0;
-
-  resultScreen.classList.add("hidden");
-  pollContainer.classList.remove("hidden");
-  progressContainer.classList.remove("hidden");
-
-  loadQuestion();
 }
