@@ -1,11 +1,3 @@
-// Initialize Supabase directly at the top
-const SUPABASE_URL = "https://bixaifcnznkkqmemfqes.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeGFpZmNuem5ra3FtZW1mcWVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NDk4ODAsImV4cCI6MjA5MDQyNTg4MH0._6L8e77pp6iFD-CecNPc_-GyhaWQu8fqsVKpVGKuf1w";
-
-let supabaseClient;
-if (typeof supabase !== 'undefined') {
-  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}
 
 const questions = [
   {
@@ -127,64 +119,44 @@ async function showResults() {
   const percentageScore = (score / questions.length) * 100;
   scoreText.textContent = `You scored ${score} out of ${questions.length}`;
 
-  if (!supabaseClient) {
-    scoreText.innerHTML += `<br><br><strong style="color: red;">ERROR: Supabase not initialized</strong>`;
-    return;
-  }
-
   try {
     const userAnswers = [];
     for (let i = 0; i < questions.length; i++) {
       userAnswers.push(i);
     }
 
-    console.log("Attempting insert with:", {
-      user_id: userId + "_" + Date.now(),
-      score: score,
-      total_questions: questions.length,
-      answers: userAnswers,
-      percentage_score: percentageScore
+    // Submit score via serverless API
+    const submitRes = await fetch('/api/submit-score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: userId + "_" + Date.now(),
+        score: score,
+        total_questions: questions.length,
+        answers: userAnswers,
+        percentage_score: percentageScore
+      })
     });
 
-    const { data: insertData, error: insertError } = await supabaseClient
-      .from("quiz_responses")
-      .insert([
-        {
-          user_id: userId + "_" + Date.now(),
-          score: score,
-          total_questions: questions.length,
-          answers: userAnswers,
-          percentage_score: percentageScore
-        }
-      ])
-      .select();
-
-    console.log("Insert response:", { insertData, insertError });
-
-    if (insertError) {
-      scoreText.innerHTML += `<br><br><strong style="color: red;">Insert Error: ${insertError.message}</strong>`;
-      console.error("Insert failed:", insertError);
+    if (!submitRes.ok) {
+      const err = await submitRes.json();
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Insert Error: ${err.error}</strong>`;
       return;
     }
 
-    console.log("Insert successful!");
-
-    const { data: allData, error: selectError } = await supabaseClient
-      .from("quiz_responses")
-      .select("*");
-
-    console.log("Select response:", { allData, selectError });
-
-    if (selectError) {
-      scoreText.innerHTML += `<br><br><strong style="color: red;">Select Error: ${selectError.message}</strong>`;
-      console.error("Select failed:", selectError);
+    // Fetch stats via serverless API
+    const statsRes = await fetch('/api/get-stats');
+    if (!statsRes.ok) {
+      const err = await statsRes.json();
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Select Error: ${err.error}</strong>`;
       return;
     }
+
+    const { data: allData } = await statsRes.json();
 
     if (allData && allData.length > 0) {
       const totalResponses = allData.length;
       const avgScore = (allData.reduce((sum, r) => sum + r.percentage_score, 0) / totalResponses).toFixed(1);
-      
       scoreText.innerHTML += `<br><br><strong>✅ Quiz Statistics:</strong><br>Total takers: ${totalResponses}<br>Average score: ${avgScore}%`;
     } else {
       scoreText.innerHTML += `<br><br><strong>✅ Your response saved!</strong>`;
